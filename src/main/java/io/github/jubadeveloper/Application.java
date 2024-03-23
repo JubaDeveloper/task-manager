@@ -17,6 +17,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.IllegalFormatConversionException;
 
 @Configuration
 @PropertySource("classpath:/application.properties")
@@ -28,26 +29,14 @@ public class Application {
     private static final String MAPPING_URL = "/*";
 
     public static void main(String[] args) throws Exception {
-        new Application().startJetty(getPortFromArgs(args));
+        new Application()
+                .startJetty(extractPortFromArgsOrFallToDefault(args));
     }
 
-    private static int getPortFromArgs(String[] args) {
-        if (args.length > 0) {
-            try {
-                return Integer.valueOf(args[0]);
-            } catch (NumberFormatException ignore) {
-            }
-        }
-        logger.info("No server port configured, falling back to {}", DEFAULT_PORT);
-        return DEFAULT_PORT;
-    }
-
-    private void startJetty(int port) throws Exception {
-        logger.info("Starting server at port {}", port);
-        Server server = new Server(port);
+    private void startJetty(int serverPort) throws Exception {
+        Server server = new Server(serverPort);
         server.setHandler(getServletContextHandler(getContext()));
         server.start();
-        logger.info("Server started at port {}", port);
         server.join();
     }
 
@@ -71,5 +60,18 @@ public class Application {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.setConfigLocation(CONFIG_LOCATION);
         return context;
+    }
+
+    private static int extractPortFromArgsOrFallToDefault (String[] args) {
+        int serverPort = DEFAULT_PORT;
+        for (String arg: args) {
+            String[] splitArg = arg.split("=");
+            if (splitArg[0].equals("--server.port")) {
+                try {
+                    serverPort = Integer.parseInt(splitArg[1]);
+                } catch (IndexOutOfBoundsException | IllegalFormatConversionException ignore) {}
+            }
+        }
+        return serverPort;
     }
 }
