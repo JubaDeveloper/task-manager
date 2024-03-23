@@ -1,10 +1,10 @@
-create sequence
+create sequence if not exists
     USER_SEQ
 as bigint
 start with 1
 increment by 50;
 
-create sequence
+create sequence if not exists
     TASK_SEQ
 as bigint
 start with 1

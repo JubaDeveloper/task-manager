@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { AppConfig.class})
+@DirtiesContext
 public class RepositoryTest {
     @Autowired
     private UserRepository userRepository;
