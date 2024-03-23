@@ -54,6 +54,11 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/panel/task")
                         .permitAll()
                 )
+                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .permitAll()
+                )
         ;
         return httpSecurity.build();
     }

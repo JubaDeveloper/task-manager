@@ -9,11 +9,17 @@
 
 <body class="bg-gray-100 font-sans antialiased">
     <div class="container mx-auto p-4">
-        <h1 data-th-text="Task" class="text-3xl font-bold mb-4">Task</h1>
+        <h1 data-th-text="Task" class="text-3xl font-bold mb-10">Task</h1>
         <a data-th-unless="${param.action}"
-            data-th-href="@{/panel/task(action='create')}"
-            data-th-text="|Create task|"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute right-0 top-0 mt-4 mr-4">Create task
+           href="task.html"
+           data-th-href="@{/panel/task(action='create')}"
+           data-th-text="|Create task|"
+           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-4 mr-4">Create task
+        </a>
+        <a href="task.html"
+           data-th-href="@{/logout}"
+           data-th-text="|Logout|"
+           class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded absolute right-0 top-0 mt-4 mr-4">Logout
         </a>
         <div data-th-if="${error}" class="rounded-md bg-red-100 p-4">
             <p data-th-text="${error}" class="text-red-600 font-semibold">Oops! Something went wrong.</p>
@@ -38,8 +44,8 @@
                             type="text"
                             placeholder="Title"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            data-th-value="${task?.title?:''}"
-                            data-th-placeholder="${task?.title?:''}"
+                            data-th-value="${task.title?:''}"
+                            data-th-placeholder="${task.title?:''}"
                             data-th-name="title"
                             name="title"
                     >
@@ -52,10 +58,11 @@
                             id="description"
                             placeholder="Description"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            data-th-placeholder="${task?.description?:''}"
+                            data-th-placeholder="${task.description?:''}"
                             data-th-name="description"
+                            data-th-field="${task.description?:''}"
                             name="description"
-                    >[[${task?.description}]]</textarea>
+                    ></textarea>
                 </div>
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
@@ -87,6 +94,7 @@
                     </button>
                     <a class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                        type="button"
+                       href="task.html"
                        data-th-href="@{/panel/task}"
                     >
                         Cancel
@@ -100,7 +108,7 @@
                 method="post"
         >
             <table
-                    class="w-full table-auto text-center"
+                    class="w-full table-auto text-center mt-10"
                     data-th-unless="${param.action}"
             >
                 <thead>
@@ -126,6 +134,7 @@
                     <td class="px-4 py-2">
                         <a
                                 data-th-text="|Update task|"
+                                href="task.html"
                                 data-th-href="@{/panel/task(action='update',taskId=*{id})}"
                                 class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded h-full">Update task</a>
                         <button
