@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 font-sans antialiased">
+    <div class="container mx-auto p-4">
+        <h1 data-th-text="Task" class="text-3xl font-bold mb-4">Task</h1>
+        <a data-th-unless="${param.action}"
+            data-th-href="@{/panel/task(action='create')}"
+            data-th-text="|Create task|"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded absolute right-0 top-0 mt-4 mr-4">Create task
+        </a>
+        <div data-th-if="${error}" class="rounded-md bg-red-100 p-4">
+            <p data-th-text="${error}" class="text-red-600 font-semibold">Oops! Something went wrong.</p>
+        </div>
+        <div data-th-if="${success}" class="rounded-md bg-green-100 p-4">
+            <p data-th-text="${success}" class="text-green-600 font-semibold">Success! Operation completed.</p>
+        </div>
+        <div class="relative mb-8" data-th-if="${param.action}">
+            <form
+                    method="post"
+                    data-th-action="@{/panel/task}"
+                    class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+            >
+                <h2 data-th-if="${param.action == 'create'}" class="text-xl font-bold mb-4">Create task</h2>
+                <h2 data-th-if="${param.action == 'update'}" class="text-xl font-bold mb-4">Update task</h2>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                        Title
+                    </label>
+                    <input
+                            id="title"
+                            type="text"
+                            placeholder="Title"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            data-th-value="${task?.title?:''}"
+                            data-th-placeholder="${task?.title?:''}"
+                            data-th-name="title"
+                            name="title"
+                    >
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+                        Description
+                    </label>
+                    <textarea
+                            id="description"
+                            placeholder="Description"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            data-th-placeholder="${task?.description?:''}"
+                            data-th-name="description"
+                            name="description"
+                    >[[${task?.description}]]</textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
+                        Status
+                    </label>
+                    <select
+                            id="status"
+                            data-th-field="${task.finished}"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option
+                                data-th-text="Finished"
+                                data-th-value="true"
+                                value="true">Finished</option>
+                        <option
+                                data-th-text="Pending"
+                                data-th-value="false"
+                                value="false">Pending</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button
+                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            type="submit"
+                            data-th-name="${param.action}"
+                            data-th-value="${task.id}"
+                            name="create"
+                    >
+                        Save
+                    </button>
+                    <a class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                       type="button"
+                       data-th-href="@{/panel/task}"
+                    >
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <form
+                data-th-action="@{/panel/task}"
+                method="post"
+        >
+            <table
+                    class="w-full table-auto text-center"
+                    data-th-unless="${param.action}"
+            >
+                <thead>
+                <tr>
+                    <th class="px-4 py-2">Title</th>
+                    <th class="px-4 py-2">Description</th>
+                    <th class="px-4 py-2">Status</th>
+                    <th class="px-4 py-2">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-th-each="task: ${tasks}" data-th-object="${task}" class="border-b">
+                    <td data-th-text="*{title}" class="px-4 py-2">Task title</td>
+                    <td data-th-utext="*{description}" class="px-4 py-2">Description</td>
+                    <td class="px-4 py-2">
+                            <span data-th-if="*{finished}"
+                                  data-th-text="Finished"
+                                  class="bg-green-500 text-white font-bold py-1 px-2 rounded">Finished</span>
+                        <span data-th-unless="*{finished}"
+                              data-th-text="Pending"
+                              class="bg-yellow-500 text-white font-bold py-1 px-2 rounded">Pending</span>
+                    </td>
+                    <td class="px-4 py-2">
+                        <a
+                                data-th-text="|Update task|"
+                                data-th-href="@{/panel/task(action='update',taskId=*{id})}"
+                                class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded h-full">Update task</a>
+                        <button
+                                data-th-text="|Delete task|"
+                                name="delete"
+                                type="submit"
+                                data-th-value="*{id}"
+                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded h-full">Delete task</button>
+                    </td>
+                </tr>
+                <!-- More rows can be added dynamically using server-side templating or JavaScript -->
+                </tbody>
+            </table>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-4 text-center">Registration</h1>
+    <div class="text-red-500 mb-4" data-th-if="${!#lists.isEmpty(errors)}">
+        <p data-th-text="|There's some errors:|">There's some error:</p>
+        <ul>
+            <li data-th-each="error : ${errors}" data-th-text="${error}">Some field error</li>
+        </ul>
+    </div>
+    <form class="flex flex-col max-w-xs" action="register.html" data-th-action="@{/register}" data-th-object="${user}" method="post">
+        <label class="mb-2">
+            Name:
+            <input required type="text" data-th-field="*{name}" placeholder="Name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+        </label>
+        <label class="mb-2">
+            Email:
+            <input required type="email" data-th-field="*{email}" placeholder="Email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+        </label>
+        <label class="mb-2">
+            Password:
+            <input required type="password" data-th-field="*{password}" placeholder="Password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+        </label>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Register</button>
+    </form>
+    <a href="../login/login.html" data-th-href="@{/login}" class="text-blue-500 hover:underline mt-2 block">Already have an account? Log in here.</a>
+</div>
+</body>
+</html>

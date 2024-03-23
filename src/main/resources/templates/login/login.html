@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <!-- Include Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+  <h1 class="text-2xl font-bold mb-4 text-center">Please Log In</h1>
+  <div class="text-red-500 mb-4" data-th-if="${param.error}">Invalid username/password.</div>
+  <div class="text-green-500 mb-4" data-th-if="${param.logout}">You have been logged out.</div>
+  <form data-th-action="@{/login}" method="post">
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2">
+        Username
+        <input type="text" name="username" placeholder="Username" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+      </label>
+    </div>
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-bold mb-2">
+        Password
+        <input type="password" name="password" placeholder="Password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+      </label>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Log In</button>
+  </form>
+  <a href="../register/register.html" data-th-href="@{/register}" class="text-blue-500 hover:underline mt-2 block">Don't have an account? Register here.</a>
+</div>
+</body>
+</html>
