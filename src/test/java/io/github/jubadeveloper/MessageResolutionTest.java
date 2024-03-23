@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -16,7 +17,7 @@ import java.util.Locale;
 @ContextConfiguration(classes = AppConfig.class)
 public class MessageResolutionTest {
     @Autowired
-    public ReloadableResourceBundleMessageSource messageSource;
+    public ResourceBundleMessageSource messageSource;
 
     @Test
     public void shouldInjectMessageSource () {
