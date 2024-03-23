@@ -21,11 +21,13 @@
            data-th-text="|Logout|"
            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded absolute right-0 top-0 mt-4 mr-4">Logout
         </a>
-        <div data-th-if="${error}" class="rounded-md bg-red-100 p-4">
-            <p data-th-text="${error}" class="text-red-600 font-semibold">Oops! Something went wrong.</p>
-        </div>
-        <div data-th-if="${success}" class="rounded-md bg-green-100 p-4">
-            <p data-th-text="${success}" class="text-green-600 font-semibold">Success! Operation completed.</p>
+        <div class="mt-10">
+            <div data-th-if="${error}" class="rounded-md bg-red-100 p-4">
+                <p data-th-text="${error}" class="text-red-600 font-semibold">Oops! Something went wrong.</p>
+            </div>
+            <div data-th-if="${success}" class="rounded-md bg-green-100 p-4">
+                <p data-th-text="${success}" class="text-green-600 font-semibold">Success! Operation completed.</p>
+            </div>
         </div>
         <div class="relative mb-8" data-th-if="${param.action}">
             <form
@@ -44,7 +46,7 @@
                             type="text"
                             placeholder="Title"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            data-th-value="${task.title?:''}"
+                            data-th-value="${task?.title?:''}"
                             data-th-placeholder="${task.title?:''}"
                             data-th-name="title"
                             name="title"
@@ -58,7 +60,7 @@
                             id="description"
                             placeholder="Description"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            data-th-placeholder="${task.description?:''}"
+                            data-th-placeholder="${task?.description?:''}"
                             data-th-name="description"
                             data-th-field="${task.description?:''}"
                             name="description"

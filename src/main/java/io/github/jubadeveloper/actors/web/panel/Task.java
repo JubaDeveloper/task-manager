@@ -97,7 +97,11 @@ public class Task {
             Model model
     ) {
         if (taskId != null) return taskService.loadTaskByIdAndUserEmail(taskId, user.getUsername());
-        return new io.github.jubadeveloper.core.domain.Task();
+        return io.github.jubadeveloper.core.domain.Task.builder()
+                .description("")
+                .title("")
+                .finished(false)
+                .build();
     }
 
     @ModelAttribute("tasks")
