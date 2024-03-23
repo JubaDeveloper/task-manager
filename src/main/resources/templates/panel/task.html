@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 
-<head>
+<head data-th-replace="~{head :: head(~{::title},_)}">
     <meta charset="UTF-8">
     <title>Task</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 font-sans antialiased">
@@ -34,6 +33,7 @@
                     method="post"
                     data-th-action="@{/panel/task}"
                     class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+                    data-th-object="${task}"
             >
                 <h2 data-th-if="${param.action == 'create'}" class="text-xl font-bold mb-4">Create task</h2>
                 <h2 data-th-if="${param.action == 'update'}" class="text-xl font-bold mb-4">Update task</h2>
@@ -46,8 +46,7 @@
                             type="text"
                             placeholder="Title"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            data-th-value="${task?.title?:''}"
-                            data-th-placeholder="${task.title?:''}"
+                            data-th-field="*{title}"
                             data-th-name="title"
                             name="title"
                     >
@@ -60,9 +59,7 @@
                             id="description"
                             placeholder="Description"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            data-th-placeholder="${task?.description?:''}"
-                            data-th-name="description"
-                            data-th-field="${task.description?:''}"
+                            data-th-field="*{description}"
                             name="description"
                     ></textarea>
                 </div>
@@ -72,7 +69,7 @@
                     </label>
                     <select
                             id="status"
-                            data-th-field="${task.finished}"
+                            data-th-field="*{finished}"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         <option
                                 data-th-text="Finished"
@@ -89,7 +86,7 @@
                             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="submit"
                             data-th-name="${param.action}"
-                            data-th-value="${task.id}"
+                            data-th-value="*{id}"
                             name="create"
                     >
                         Save
