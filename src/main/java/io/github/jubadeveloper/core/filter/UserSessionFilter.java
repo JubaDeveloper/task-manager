@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.util.Optional;
 
 /**
  * Used for inject user information into the session attribute
@@ -40,17 +42,16 @@ public class UserSessionFilter extends OncePerRequestFilter {
      */
     private void setAuth (HttpServletRequest httpServletRequest) {
         if (httpServletRequest.getPathInfo().matches(PATH_PATTERN)) {
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            // Check if there's any authentication
-            Authentication authentication = securityContext.getAuthentication();
-            // Check if authentication is a kind of what we are looking for
-            if (authentication instanceof UsernamePasswordAuthenticationToken) {
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                logger.info("Injecting user into auth into request");
-                httpServletRequest
-                        .getSession()
-                        .setAttribute("user", userDetails);
-            }
+            UserDetails authentication = Optional.of(SecurityContextHolder.getContext())
+                    .map(SecurityContext::getAuthentication)
+                    .filter(Authentication::isAuthenticated)
+                    .map(Authentication::getPrincipal)
+                    .map(UserDetails.class::cast)
+                    .orElse(null);
+            logger.info("Injecting user into auth into request");
+            httpServletRequest
+                    .getSession()
+                    .setAttribute("user", authentication);
         }
     }
 }
