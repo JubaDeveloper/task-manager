@@ -1,6 +1,7 @@
 package io.github.jubadeveloper.configuration;
 
 
+import io.github.jubadeveloper.core.filter.UserSessionFilter;
 import io.github.jubadeveloper.core.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,9 +37,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain globalSecurityFilterChain (
             HttpSecurity httpSecurity,
-            UserService userService
+            UserService userService,
+            UserSessionFilter userSessionFilter
     ) throws Exception {
         httpSecurity
+                .addFilterBefore(userSessionFilter, AuthorizationFilter.class)
                 .anonymous(httpSecurityAnonymousConfigurer -> httpSecurityAnonymousConfigurer
                         .principal("anonymous")
                         .authorities("ROLE_ANONYMOUS")

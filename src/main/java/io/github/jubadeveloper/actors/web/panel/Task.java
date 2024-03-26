@@ -4,22 +4,27 @@ import io.github.jubadeveloper.core.domain.User;
 import io.github.jubadeveloper.core.meta.annotations.WebLayer;
 import io.github.jubadeveloper.core.service.TaskService;
 import io.github.jubadeveloper.core.service.UserService;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.lang.Nullable;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
-import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @WebLayer("/panel/task")
 public class Task {
@@ -40,43 +45,41 @@ public class Task {
     @PostMapping(params = "create")
     public String createTask (
             @ModelAttribute("task") io.github.jubadeveloper.core.domain.Task task,
-            @ModelAttribute("userData") User user,
-            @ModelAttribute("user") UserDetails userDetails,
+            @SessionAttribute("user") UserDetails user,
             Model model
     ) {
         System.out.println("Creating task");
-        task.setUser(user);
+        task.setUser(userService.loadByEmail(user.getUsername()));
         task.setId(null);
         taskService.createOrUpdateTask(task);
         model.addAttribute("success", "Task created");
-        model.addAttribute("tasks", tasks(userDetails, model));
+        model.addAttribute("tasks", tasks(user, model));
         return "panel/task";
     }
 
     @PostMapping(params = {"update"})
     public String updateTask (
             io.github.jubadeveloper.core.domain.Task task,
-            @ModelAttribute("userData") User user,
             @RequestParam("update") Long taskId,
-            @ModelAttribute("user") UserDetails userDetails,
+            @SessionAttribute("user") UserDetails user,
             Model model
     ) {
-        io.github.jubadeveloper.core.domain.Task task1 = taskService.loadTaskByIdAndUserEmail(taskId, user.getEmail());
+        io.github.jubadeveloper.core.domain.Task task1 = taskService.loadTaskByIdAndUserEmail(taskId, user.getUsername());
         if (task1 == null) {
             model.addAttribute("error", "Task not found");
             return "panel/task";
         }
         task.setId(taskId);
-        task.setUser(user);
+        task.setUser(userService.loadByEmail(user.getUsername()));
         taskService.createOrUpdateTask(task);
         model.addAttribute("success", "Task updated");
-        model.addAttribute("tasks", tasks(userDetails, model));
+        model.addAttribute("tasks", tasks(user, model));
         return "panel/task";
     }
 
     @PostMapping(params = {"delete"})
     public String deleteTask (
-            @ModelAttribute("user") UserDetails user,
+            @SessionAttribute("user") UserDetails user,
             @RequestParam("delete") Long taskId,
             Model model
     )  {
@@ -93,8 +96,7 @@ public class Task {
     @ModelAttribute("task")
     public io.github.jubadeveloper.core.domain.Task task (
             @RequestParam("taskId") @Nullable Long taskId,
-            @ModelAttribute("user") UserDetails user,
-            Model model
+            @SessionAttribute("user") UserDetails user
     ) {
         if (taskId != null) return taskService.loadTaskByIdAndUserEmail(taskId, user.getUsername());
         return io.github.jubadeveloper.core.domain.Task.builder()
@@ -106,26 +108,13 @@ public class Task {
 
     @ModelAttribute("tasks")
     public List<io.github.jubadeveloper.core.domain.Task> tasks (
-            @ModelAttribute("user") UserDetails userDetails,
+            @SessionAttribute("user") UserDetails user,
             Model model
     ) {
-        List<io.github.jubadeveloper.core.domain.Task> tasks = taskService.loadTasksByUserId(userDetails.getUsername());
+        List<io.github.jubadeveloper.core.domain.Task> tasks = taskService.loadTasksByUserId(user.getUsername());
         if (tasks.isEmpty()) {
             model.addAttribute("success", "There is no task yet");
         }
         return tasks;
-    }
-
-    @ModelAttribute("user")
-    public UserDetails authenticatedUser (@AuthenticationPrincipal Principal principal) {
-        return (UserDetails) (((UsernamePasswordAuthenticationToken) principal).getPrincipal());
-    }
-
-    @ModelAttribute("userData")
-    public User authenticatedUser (@ModelAttribute("user") UserDetails userDetails) {
-        if (userDetails != null) {
-            return this.userService.loadByEmail(userDetails.getUsername());
-        }
-        return null;
     }
 }
