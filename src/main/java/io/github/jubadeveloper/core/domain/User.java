@@ -18,7 +18,7 @@ import lombok.ToString;
 import java.util.Set;
 
 @Entity
-@Table(name = "`User`")
+@Table(name = "User_")
 @Data
 @Builder
 @AllArgsConstructor

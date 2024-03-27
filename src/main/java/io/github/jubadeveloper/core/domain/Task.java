@@ -29,6 +29,7 @@ import java.sql.Date;
 @ToString(
         exclude = {"user"}
 )
+@Table(name = "Task_")
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

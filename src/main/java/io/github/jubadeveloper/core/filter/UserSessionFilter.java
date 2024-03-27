@@ -46,6 +46,7 @@ public class UserSessionFilter extends OncePerRequestFilter {
                     .map(SecurityContext::getAuthentication)
                     .filter(Authentication::isAuthenticated)
                     .map(Authentication::getPrincipal)
+                    .filter(UserDetails.class::isInstance)
                     .map(UserDetails.class::cast)
                     .orElse(null);
             logger.info("Injecting user into auth into request");
